@@ -1,6 +1,6 @@
 # 炫酷的监控界面
 
-## 安装PROMETHEUS和GRAFANA
+## 炫酷的监控界面:安装PROMETHEUS和GRAFANA
 
 `docker-compose.yml`
 

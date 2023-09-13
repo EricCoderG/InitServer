@@ -1,0 +1,54 @@
+# Kafka
+
+新建搭建kafka环境的`docker-compose.yml`文件，内容如下：
+
+```plain
+version: '3'
+services:
+  zookepper:
+    image: wurstmeister/zookeeper                    # 原镜像`wurstmeister/zookeeper`
+    container_name: zookeeper                        # 容器名为'zookeeper'
+    volumes:                                         # 数据卷挂载路径设置,将本机目录映射到容器目录
+      - "/etc/localtime:/etc/localtime"
+    ports:                                           # 映射端口
+      - "2181:2181"
+
+  kafka:
+    image: wurstmeister/kafka                                # 原镜像`wurstmeister/kafka`
+    container_name: kafka                                    # 容器名为'kafka'
+    volumes:                                                 # 数据卷挂载路径设置,将本机目录映射到容器目录
+      - "/etc/localtime:/etc/localtime"
+    environment:                                                       # 设置环境变量,相当于docker run命令中的-e
+      KAFKA_BROKER_ID: 0                                               # 在kafka集群中，每个kafka都有一个BROKER_ID来区分自己
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://ip:9092 # TODO 将kafka的地址端口注册给zookeeper
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092                        # 配置kafka的监听端口
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181                
+      KAFKA_CREATE_TOPICS: "hello_world"
+      KAFKA_HEAP_OPTS: -Xmx1G -Xms256M
+    ports:                              # 映射端口
+      - "9092:9092"
+    depends_on:                         # 解决容器依赖启动先后问题
+      - zookepper
+
+  kafka-manager:
+    image: sheepkiller/kafka-manager                         # 原镜像`sheepkiller/kafka-manager`
+    container_name: kafka-manager                            # 容器名为'kafka-manager'
+    environment:                        # 设置环境变量,相当于docker run命令中的-e
+      ZK_HOSTS: zookeeper:2181 
+      APPLICATION_SECRET: xxxxx
+      KAFKA_MANAGER_AUTH_ENABLED: "true"  # 开启kafka-manager权限校验
+      KAFKA_MANAGER_USERNAME: admin       # 登陆账户
+      KAFKA_MANAGER_PASSWORD: 123456      # 登陆密码
+    ports:                              # 映射端口
+      - "9000:9000"
+    depends_on:                         # 解决容器依赖启动先后问题
+      - kafka
+```
+
+文件内 **// TODO 中的ip**需要改成自己的（云服务器的外网地址），并且如果你用的是云服务器，那需要把端口给打开。
+
+在存放`docker-compose.yml`的目录下执行启动命令：
+
+```plain
+docker-compose up -d
+```
