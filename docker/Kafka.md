@@ -2,7 +2,7 @@
 
 新建搭建kafka环境的`docker-compose.yml`文件，内容如下：
 
-```plain
+```dockerfile
 version: '3'
 services:
   zookepper:
