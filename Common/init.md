@@ -23,3 +23,12 @@ sudo apt install build-essential
 ```shell
 复制代码sudo apt install vim
 ```
+
+其他部分
+
+```shell
+# 
+sudo apt install npm 
+sudo apt install nodejs
+```
+
